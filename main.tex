@@ -86,11 +86,27 @@ be mentioned.
 Numerical Solutions to Partial Differential Equations; Essentially Non-Oscillatory Method (ENO); Weighted ENO (WENO); Finite Voume Method (FVM);
 
 \section{Introduction}
- The need of numerical solution to partial differential equation arises when analytical solution is difficult to find or it's closed form almost surely does not exist. In this struggle, it has been found that the consistent and regular numerical solution to hyperbolic conservation laws are also difficult to achieve. The high order accurate schemes such as Finite Volume Method (FVM), Finite difference method (FDM), Finite Element Method (FEM), and Spectral schemes are reluctant to seek smooth and regulator solution even-though the given Initial and Boundary Conditions are smooth. However the first order accurate schemes gives the solution to hyperbolic PDEs, but to get the desired accuracy mesh size should be kept very close to zero. which in turn makes computation cost very high and slows the overall clock speed. 
-In fact, by the famous Godunov theorem, a linear scheme must be either oscillatory or only first order accurate. So, in this regard the new scheme, Essentially Non-Oscillatory (ENO) Scheme, proposed in (---)  approximates the solution with high order accuracy in smooth regions and helps us smooth transitions of essentially non-oscillatory discontinuities.
+ The need of numerical solution to partial differential equation arises when analytical solution is difficult to find or it's closed form almost surely does not exist. This difficulty become more evident while solving non-linear partial differential equations. The problem get worse when the system of partial differential eqations are equipped with discontinuous initial data profile. As in this case we can no longer establish a solution to the system of PDEs in strong or classical sense. A class of such systems are classified as hyperbolic conservation laws. This classification is based on special structure of the eigenvalues of jacobian matrices related to the flux vector of conservation law. The complex interaction of waves emerging in different regions between characteristics curves poses a major challenge to find the exact as well as numerical solution to hyperbolic conservation laws. In this struggle, it has been found that the consistent and stable numerical solution to hyperbolic conservation laws are also difficult to achieve. Several methods have been formulated for finding the numerical solution to nonlinear conservation laws. These methods include high order accurate schemes such as Finite Volume Method (FVM), Finite difference method (FDM), Finite Element Method (FEM), and Spectral schemes. The primary concern is to find a smooth and regulator solution which requires a higher order accuracy as well as computational efficiency of the method. The first order accurate schemes gives the solution to hyperbolic PDEs, but to get the desired accuracy mesh size should be kept very close to zero. which in turn makes computation cost very high and slows the overall clock speed. Hence it is essential to formulate a procedure that is more accurate and involves less computations.  
+In fact, by the famous Godunov theorem, a linear scheme must be either oscillatory or only first order accurate. So, in this regard the new scheme, Essentially Non-Oscillatory (ENO) Scheme, proposed in (\cite{harten1987uniformly})  approximates the solution with high order accuracy in smooth regions and helps us smooth transitions of essentially non-oscillatory discontinuities.
 
 
 \section{Definitions}
+% \noindent \textbf{Brief introduction to Hyperbolic Conservation Laws}\\
+% Here you have to give definition of hyperbolic conservation laws, Riemann problem, the characteristics curve and some discussion on solution of hyperbolic conservation laws. \\
+% 
+\noindent \textbf{Hyperbolic conservation law} \\
+A conservation law states that a particular measurable property of an isolated physical system does not change as the system evolves over time. Exact conservation laws include conservation of mass, conservation of linear momentum, conservation of angular momentum, and conservation of electric charge. Hyperbolic PDEs of the following form happens to satisfy the conservation law.
+\begin{equation}
+    \frac{\partial }{\partial t}u(x,t) + \frac{\partial }{\partial x}f(u(x,t)) = 0
+\end{equation}
+Here $u(x,t)$ represents the quantity that moves according to the given flux function $f(u(x,t))$.\\
+
+\noindent \textbf{Riemann Problem} \\
+A Riemann problem, named after Bernhard Riemann, is a specific initial value problem composed of a conservation equation together with piece-wise constant initial data which has a single discontinuity in the domain of interest.\\
+
+\noindent \textbf{Characteristic Curves}\\
+The method of characteristics discovers curves (called characteristic curves or just characteristics) along which the PDE becomes an ordinary differential equation (ODE). Once the ODE is found, it can be solved along the characteristic curves and transformed into a solution for the original PDE.\\
+
 \noindent \textbf{Conservative Numerical Method}\\
 A numerical method is conservative if it can be written in the following form 
 \begin{equation}
@@ -130,41 +146,36 @@ A total variation diminishing scheme is one that can be written in the form
 \\
 
 \section{Problem Statement}
-\noindent The problem is taken from the article (this). Which is a mathematical model in the form of hyperblic PDE i.e. Convservation Law. Our task is to apply ENO and WENO Finite Volume scheme on this model to get the desired results.
+\noindent The problem is taken from the article A solution of the Junction Riemann Problem for 1D hyperbolic balance laws in networks including supersonic flow conditions on elastic collapsible tubes. Which is a mathematical model in the form of hyperblic PDE i.e. holds convservation law. Our task is to apply ENO and WENO Finite Volume scheme on this model to get the desired results. Moreover I will examine the above listed properties of ENO and WENO procedures for the proposed model in the given article\cite{murillo2021solution}. 
 
 \section{Literature Review}
-ENO and WENO scheme has been discussed in detail ~(\cite{shu_2020}). and Model that has been proposed in ~(ARTICLE) will be solved numerically using Finite Volume Method with the aid of ENO/WENO scheme.
+ENO and WENO scheme has been discussed in detail ~(\cite{shu_2020}). and Model that has been proposed in problem statement section will be solved numerically using Finite Volume Method with the aid of Nonlinear ENO/WENO scheme.
 
 
 \section{Methodology}
-The essentially non-oscillatory (ENO) scheme is an ENO approximation procedure which consists of two parts i.e. ENO interpolation procedure  and ENO reconstruction procedure. So we go through them one by one. In ENO scheme, the interpolation is done to approximate the missing nodes or points. Let's demonstrate the interpolation in one dimensional case. Assume that $u(x)$ is piece wise continuous solution to given hyperbolic conservation law i.e.
-\begin{equation}
-  \begin{cases}
-    u_{t} + f(u)_{x} = 0 &\text{in}\;\mathbb{R} \times [0,\infty)\\ 
-    u(x,0) = u_{0}(x) &\text{on}\;\mathbb{R} \times \{t=0\}.
-  \end{cases}
-  \label{eq:conslaw}
-\end{equation}
+The essentially non-oscillatory (ENO) scheme is an ENO approximation procedure, consists of two parts i.e. ENO interpolation procedure  and ENO reconstruction procedure. So we go through them one by one. In ENO scheme, the interpolation is done to approximate higher order cell averages of unknown $u$. Let's demonstrate the interpolation in one dimensional case. Assume that $u(x)$ is piece wise continuous solution to given hyperbolic conservation law i.e.
+\begin{align}
+u_{t} + f(u)_{x} = 0  &\text{ in } \mathbb{R} \times [0,\infty)\\ 
+u(x,0) = u_{0}(x) &\text{ on } \mathbb{R} \times \{t=0\}
+\end{align}
 
 \noindent In numerical approximations, the first step is to generate the computational domain. In case of one dimension, given the real line as $a\leq x \leq b$ then the  mesh $x_1<x_2<x_3<...<x_n$ with $\Delta x_{i+\frac{1}{2}} = x_{i+1} - x_i$ and $\Delta x = \max_i{\Delta x_{i+\frac{1}{2}}}$
 
-\noindent Let $U_i = u(x_i)$ be discrete set of values of $u(x)$. we want to find an interpolating polynomial $P_{i+\frac{1}{2}}(x)$ on $I_{i+\frac{1}{2}} = (x_i,x_{i+1})$ for u(x). This can be done with the help of classical interpolation method as Newton Method or Lagrange Method. 
+\noindent Let $u_i = u(x_i)$ be discrete set of values of $u(x)$. we want to find an interpolating polynomial $P_{i+\frac{1}{2}}(x)$ on $I_{i+\frac{1}{2}} = (x_i,x_{i+1})$ for u(x). This can be done with the help of classical interpolation method as Newton Method or Lagrange Method. 
 
 
-\noindent Suppose we have four points $S = \{x_{i-1},x_i,x_{i+1},x_{i+2}\}$ using this we get polynomial $P_{i+\frac{1}{2}}(x)$ of degree 3 with following condition satisfied.
-
+\noindent Suppose we have four points central stencil i.e. $S = \{x_{i-1},x_i,x_{i+1},x_{i+2}\}$ using this we get an unique high order polynomial $P_{i+\frac{1}{2}}(x)$ of degree 3 with following conditions satisfied.
 \begin{equation}
     P_{i+\frac{1}{2}}(x_j) = u_j \hspace{2cm} j=i-1,i,i+1,i+2
 \end{equation}
-
 \noindent The solution is smooth in the chosen stencil if the following condition is met
-\begin{equation} \label{high_order_condition}
+\begin{equation} \label{HighOrderCondition}
     |u(x) - P_{i + \frac{1}{2}}(x)| \leq C \Delta x ^4, \hspace{2cm} x \in I_{i + \frac{1}{2}}
 \end{equation}
 
-\noindent The actual problem is to get smoothness of solution near discontinuities. The solution breaks to be high order accurate if chosen stencil contains the discontinuity i.e. it fails the condition 6.
+\noindent The actual problem is to get smoothness of solution and it's gradient near discontinuities. The solution breaks to be high order accurate if chosen stencil contains the discontinuity i.e. it fails the condition (\ref{HighOrderCondition}).
 
-\noindent The idea of ENO in Harten1987 is pick the stencil in a way that local smoothness of solution $u(x)$ is guaranteed. In order to choose stencil adaptively and automatically, Newton divided difference is used
+\noindent The idea of ENO \cite{harten1987uniformly} is to pick the stencil in such a way that local smoothness of solution $u(x)$ is guaranteed. In order to choose stencil adaptively and automatically, Newton divided difference is used
 
 \begin{enumerate}
     \item Compute $u(x)$ using divided difference, for all $j= ...1,2,3...$
@@ -175,17 +186,12 @@ The essentially non-oscillatory (ENO) scheme is an ENO approximation procedure w
     \begin{equation}
         u[j,k+1] = \frac{u[j+1,k] - u[j,k]}{x_{j+k+1} - x_j}
     \end{equation}
-    
     \item Initial must contain only two points of the chosen interval $I_{i+\frac{1}{2}}$
-    
     \begin{equation}
         S^{( 0 )} = \{ x_i,x_{i+1} \}
     \end{equation}
 \end{enumerate}
-
-
 \noindent at each iteration the only one point is added to keep intact the smoothness.\\
------------------------------In progress the interpolation procedure------------------------------\\
 
 \noindent \textbf{ENO reconstruction} procedure is followed to tackle the hyperbolic PDEs i.e. Conservation Laws. Now we use different notation which is widely used in \textbf{Finite Volume Scheme}.
 \begin{align}
@@ -244,8 +250,21 @@ Cell averages are assumed to be given initially
 \begin{equation}
     \frac{d}{dt} \bar{u_i} + \frac{1}{\Delta x_i} \left[ \hat{f}(u^{-}_{i+\frac{1}{2}},u^{+}_{{i+\frac{1}{2}}}) - \hat{f}(u^-_{i-\frac{1}{2}} , u^+_{i-\frac{1}{2}} ) \right] = 0
 \end{equation}
-\noindent We will choose the Godunov numerical flux. Further detailed introduction can be found in (LeVeque 1990). The ENO reconstruction procedure is used to approximate $u^-_{i+\frac{1}{2}}$ with starting cell $I_i$ in the stencil, then adding one cell at a time until required number of cells are reached. The ENO reconstruction procedure to approximate the $u^+_{i+\frac{1}{2}}$ at same location but starting with cell $I_{i+1}$ in the stencil.
-\begin{figure}
+\noindent We will choose the Godunov numerical flux. Further detailed introduction can be found in (LeVeque 1990). The ENO reconstruction procedure is used to approximate $u^-_{i+\frac{1}{2}}$ with starting cell $I_i$ in the stencil, then adding one cell at a time until required number of cells are reached. The ENO reconstruction procedure to approximate the $u^+_{i+\frac{1}{2}}$ at same location but starting with cell $I_{i+1}$ in the stencil.\\
+
+The follwing is the Godunov numerical flux that will be used in ENO/WENO finite volume scheme.
+\begin{equation}
+\hat{f}(\bar{u}_{j}, \bar{u}_{j+1}) = 
+\begin{cases}
+\min_{\bar{u}_{j} \leq u \leq \bar{u}_{j+1}} f(u), &\bar{u}_{j} \leq  \bar{u}_{j+1}\\ 
+\max_{\bar{u}_{j} \geq u \geq \bar{u}_{j+1}} f(u), &\bar{u}_{j} > \bar{u}_{j+1}.
+\end{cases}
+\end{equation}
+
+
+
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=12cm,height=10cm]{Screenshot 2022-01-23 212157.png}
     \caption{A typical finite volume grid displaying cell averages and fluxes.}
